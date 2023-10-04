@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include('djoser.urls')),
-    path('api/', include('djoser.urls.authtoken')),
+    path('api/auth_token/', include('djoser.urls.authtoken')),
     # path('api/jwt-token/', include('djoser.urls.jwt')),
 
     # === API Document ===

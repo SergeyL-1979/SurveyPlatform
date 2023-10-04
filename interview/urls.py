@@ -20,12 +20,13 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/api/', include('djoser.urls')),
-    path('api/api/', include('djoser.urls.authtoken')),
-    path('api/api/', include('djoser.urls.jwt')),
+    # path('api/', include('djoser.urls')),
+    # path('api/auth-token/', include('djoser.urls.authtoken')),
+    # path('api/jwt-token/', include('djoser.urls.jwt')),
 
     # === API Document ===
     path('accounts/', include('rest_framework.urls', namespace="rest_framework")),
 
-    path('users/', include(('users.urls', 'users'), namespace='users')),
+    path('', include(('users.urls', 'users'), namespace='users')),
+    path('survey/', include(('survey.urls', 'survey'), namespace='survey')),
 ]

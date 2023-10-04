@@ -2,10 +2,10 @@ from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSeria
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-from users.models import User
+# from users.models import User
 
 
-# User = get_user_model()
+User = get_user_model()
 # Здесь нам придется переопределить сериалайзер, который использует djoser
 # для создания пользователя из-за того, что у нас имеются нестандартные поля
 

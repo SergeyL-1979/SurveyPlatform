@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     # 'drf_yasg',
     # ======= My Apps =======
     'users.apps.UsersConfig',
-    # 'survey.apps.SurveyConfig',
+    'survey.apps.SurveyConfig',
     # 'questionnaire.apps.QuestionnaireConfig'
     # =======================
 ]
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'querycount.middleware.QueryCountMiddleware',
+    # 'querycount.middleware.QueryCountMiddleware',
 ]
 
 ROOT_URLCONF = 'interview.urls'
@@ -162,7 +162,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': '#/activation/{uid}/{token}',
+    'ACTIVATION_URL': 'users/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
 
     'SERIALIZERS': {
@@ -178,13 +178,4 @@ DJOSER = {
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
-
-
-
-    # 'USER_CREATE_PASSWORD_RETYPE': True,
-    # 'SEND_ACTIVATION_EMAIL': True,
-    # 'SET_PASSWORD_RETYPE': True,
-    # 'PASSWORD_RESET_CONFIRM_RETYPE': True,
-    # 'TOKEN_MODEL': None,  # We use only JWT
-    # 'ACTIVATION_URL': 'auth/verify/{uid}/{token}/',
 }

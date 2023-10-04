@@ -1,13 +1,31 @@
 from djoser.serializers import UserCreateSerializer as BaseUserRegistrationSerializer
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 
-# from users.models import User
+from djoser.conf import settings
+from djoser.serializers import TokenCreateSerializer
 
 
 User = get_user_model()
 # Здесь нам придется переопределить сериалайзер, который использует djoser
 # для создания пользователя из-за того, что у нас имеются нестандартные поля
+
+
+class CustomTokenCreateSerializer(TokenCreateSerializer):
+
+    def validate(self, attrs):
+        password = attrs.get("password")
+        params = {settings.LOGIN_FIELD: attrs.get(settings.LOGIN_FIELD)}
+        self.user = authenticate(
+            request=self.context.get("request"), **params, password=password
+        )
+        if not self.user:
+            self.user = User.objects.filter(**params).first()
+            if self.user and not self.user.check_password(password):
+                self.fail("invalid_credentials")
+        if self.user:  # and self.user.is_active:
+            return attrs
+        self.fail("invalid_credentials")
 
 
 class UserRegistrationSerializer(BaseUserRegistrationSerializer):
@@ -52,105 +70,3 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         или ответ, включая поля, явно указанные выше. """
         model = User
         fields = ['email', 'password', 'first_name', 'last_name', 'token', 'last_login', ]
-
-    # def update(self, instance, validated_data):
-    #     instance.email = validated_data.get("email", instance.email)
-    #     instance.first_name = validated_data.get("first_name", instance.first_name)
-    #     instance.last_name = validated_data.get("last_name", instance.last_name)
-    #     instance.phone = validated_data.get("phone", instance.phone)
-    #     instance.last_login = validated_data.get("last_login", instance.last_login)
-    #     instance.image = validated_data.get("image", instance.image)
-    #     instance.save()
-    #     return instance
-
-
-# ======================================================================
-# from django.contrib.auth import authenticate
-# from django.contrib.auth.password_validation import validate_password
-# from rest_framework import serializers
-# from rest_framework.exceptions import ValidationError
-
-# from users.models import User
-# ======================================================================
-# ======================================================================
-# class CreateUserSerializer(serializers.ModelSerializer):
-#     """ Создаем пользователя и регистрируем его. """
-#     password = serializers.CharField(write_only=True, validators=[validate_password])
-#     password_repeat = serializers.CharField(write_only=True)
-#
-#     class Meta:
-#         model = User
-#         read_only_fields = ("id",)
-#         fields = [
-#             "id",
-#             "username",
-#             "first_name",
-#             "last_name",
-#             "email",
-#             "password",
-#             "password_repeat",
-#         ]
-#
-#     def validate(self, attrs: dict):
-#         password: str = attrs.get("password")
-#         password_repeat: str = attrs.pop("password_repeat", None)
-#         if password != password_repeat:
-#             raise ValidationError("password and password_repeat is not equal")
-#         return attrs
-#
-#     def create(self, validated_data):
-#         user = User.objects.create_user(**validated_data)
-#         self.user = user
-#         return user
-#
-#
-# class LoginSerializer(serializers.Serializer):
-#     """ Авторизация пользователя на сайте """
-#     username = serializers.CharField(write_only=True)
-#     password = serializers.CharField(write_only=True)
-#
-#     def validate(self, attrs: dict):
-#         username = attrs.get("username")
-#         password = attrs.get("password")
-#         user = authenticate(username=username, password=password)
-#         if not user:
-#             raise ValidationError("username or password is incorrect")
-#         attrs["user"] = user
-#         return attrs
-#
-#
-# class UserSerializer(serializers.ModelSerializer):
-#     """ Вывод объекта пользователя """
-#     class Meta:
-#         model = User
-#         read_only_fields = ("id",)
-#         fields = [
-#             # "id",
-#             "username",
-#             "first_name",
-#             "last_name",
-#             "email",
-#         ]
-#
-#
-# class UpdatePasswordSerializer(serializers.ModelSerializer):
-#     """ Модель редактирования пароля """
-#     old_password = serializers.CharField(write_only=True)
-#     new_password = serializers.CharField(write_only=True, validators=[validate_password])
-#
-#     class Meta:
-#         model = User
-#         read_only_fields = ("id",)
-#         fields = ("old_password", "new_password")
-#
-#     def validate(self, attrs):
-#         old_password = attrs.get("old_password")
-#         user: User = self.instance
-#         if not user.check_password(old_password):
-#             raise ValidationError({"old_password": "field is incorrect"})
-#         return attrs
-#
-#     def update(self, instance: User, validated_data):
-#         instance.set_password(validated_data["new_password"])
-#         instance.save(update_fields=["password"])
-#         return instance

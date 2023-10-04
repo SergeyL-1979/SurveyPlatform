@@ -37,7 +37,7 @@ class AnswerSerializer(serializers.Serializer):
     def save(self):
         answers = self.data['answers']
         user = self.context.user
-        for question_id, in answers:  # тут наверное лишняя запятая , ошибка в оригинальном коде
+        for question_id in answers:
             question = Question.objects.get(pk=question_id)
             choices = answers[question_id]
             for choice_id in choices:

@@ -12,6 +12,10 @@ class Question(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Вопрос'
+        verbose_name_plural = 'Вопросы'
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.DO_NOTHING)
@@ -22,6 +26,10 @@ class Choice(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Вариант'
+        verbose_name_plural = 'Варианты'
+
 
 class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
@@ -31,3 +39,7 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.choice.title
+
+    class Meta:
+        verbose_name = 'Ответ'
+        verbose_name_plural = 'Ответы'

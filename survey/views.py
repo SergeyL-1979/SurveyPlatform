@@ -15,6 +15,9 @@ class GetQuestion(GenericAPIView):
         last_point = QuestionSerializer(questions, many=True)
         return Response(last_point.data)
 
+    def get_queryset(self):
+        pass
+
 
 class QuestionAnswer(GenericAPIView):
     permission_classes = (IsAuthenticated,)
@@ -25,3 +28,6 @@ class QuestionAnswer(GenericAPIView):
         if answer.is_valid(raise_exception=True):
             answer.save()
             return Response({'result': 'OK'})
+
+    def get_queryset(self):
+        pass

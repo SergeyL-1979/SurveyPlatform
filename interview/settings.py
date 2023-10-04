@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # ===== DRF ========
     'rest_framework',
+    'rest_framework.authtoken',
     'djoser',
+    'corsheaders',
     # ===== Фильтры django-filter ====
     # 'django_filters',
     # ==== Подключаем OpenAPI ====
@@ -57,6 +59,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # ===== cors headers configure =====================
+    'corsheaders.middleware.CorsMiddleware',
+    # ==================================================
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,12 +148,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # =============================== MY SETTINGS ===============================
 SITE_ID = 1
+# SITE_NAME = "Survey"
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_USERNAME_FIELDS = ['email', ]
 
 # ============= Настройки электронной почты =========
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = os.environ.get('HOST_SMTP_YA')
 EMAIL_PORT = os.environ.get('PORT_SMTP')
 EMAIL_HOST_USER = os.environ.get('HOST_USER_YA')  # ваш QQ Номер счета и код авторизации
@@ -158,24 +171,49 @@ SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # =====================================================
 
-# здесь мы настраиваем Djoser
+# =============== configure DRF =======================
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}
+
+# ======= здесь мы настраиваем Djoser ==== configure Djoser ==========
 DJOSER = {
+    'USER_ID_FIELD': 'username',
     'LOGIN_FIELD': 'email',
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'users/activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'reset_password/{uid}/{token}',
+    'ACTIVATION_URL': 'users/activation/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
 
     'SERIALIZERS': {
         'user_create': 'users.serializers.UserRegistrationSerializer',
         'current_user': 'users.serializers.CurrentUserSerializer',
+        'token_create': 'users.serializers.CustomTokenCreateSerializer',
     },
 
     'EMAIL': {
         # === 'password_reset': 'appName.viewFileName.PasswordResetEmail' ===
         'password_reset': 'users.email.PasswordResetEmail',
-        'activation': 'users.email.ActivationEmail'
+        # 'activation': 'users.serializers.ActivationSerializer',
     },
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
     },
 }
+
+
+# PROTOCOL = "http"
+# # DOMAIN = "localhost:3000"
+# if not DEBUG:
+#     PROTOCOL = "https"
+#     # DOMAIN = "boilerplate.survey.com"

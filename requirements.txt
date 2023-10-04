@@ -9,11 +9,11 @@ drf-yasg==1.21.7
 requests==2.31.0
 gunicorn==21.2.0
 Pillow==10.0.1
-psycopg2-binary==2.9.5
+psycopg2-binary==2.9.9
 
 django-debug-toolbar==4.2.0
 django-querycount==0.8.3
 
-django-cors-headers==3.14.0
+django-cors-headers==4.2.0
 drf-extra-fields==3.7.0
 drf-nested-routers==0.93.4

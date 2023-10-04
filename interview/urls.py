@@ -17,16 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from survey.urls import urlpatterns_survey
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # path('api/', include('djoser.urls')),
-    # path('api/auth-token/', include('djoser.urls.authtoken')),
+    path('api/', include('djoser.urls')),
+    path('api/', include('djoser.urls.authtoken')),
     # path('api/jwt-token/', include('djoser.urls.jwt')),
 
     # === API Document ===
     path('accounts/', include('rest_framework.urls', namespace="rest_framework")),
 
-    path('', include(('users.urls', 'users'), namespace='users')),
-    path('survey/', include(('survey.urls', 'survey'), namespace='survey')),
+    path('users/', include(('users.urls', 'users'), namespace='users')),
+    # path('survey/', include(('survey.urls', 'survey'), namespace='survey')),
 ]
+
+urlpatterns += urlpatterns_survey

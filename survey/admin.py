@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from survey.models import Question, Answer, Choice
+from survey.models import Question, Answer, Choice, CheckQuestion, Favorites
 
 
 class QuestionAdmin(admin.ModelAdmin):
@@ -30,6 +30,25 @@ class AnswerAdmin(admin.ModelAdmin):
     list_filter = ('user',)
 
 
+class CheckQuestionAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'question',
+        'survey_viewed',
+    )
+
+
+class FavoritesAdmin(admin.ModelAdmin):
+    list_display = (
+        'user',
+        'question',
+        'like_rating',
+        'like_status',
+    )
+
+
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Choice, ChoiceAdmin)
 admin.site.register(Answer, AnswerAdmin)
+admin.site.register(CheckQuestion, CheckQuestionAdmin)
+admin.site.register(Favorites, FavoritesAdmin)

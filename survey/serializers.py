@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from survey.models import Answer, Question, Choice
+from survey.models import Answer, Question, Choice, CheckQuestion
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
@@ -45,3 +45,10 @@ class AnswerSerializer(serializers.Serializer):
                 Answer(user=user, question=question, choice=choice).save()
                 user.is_answer = True
                 user.save()
+
+
+class CheckQuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CheckQuestion
+        fields = '__all__'

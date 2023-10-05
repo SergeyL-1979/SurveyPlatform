@@ -1,12 +1,12 @@
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import GenericAPIView
+from rest_framework import generics
 from rest_framework.response import Response
 
-from survey.serializers import QuestionSerializer, AnswerSerializer
+from survey.serializers import QuestionSerializer, AnswerSerializer, CheckQuestionSerializer
 from survey.models import Question
 
 
-class GetQuestion(GenericAPIView):
+class GetQuestion(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = QuestionSerializer
 
@@ -19,7 +19,7 @@ class GetQuestion(GenericAPIView):
         pass
 
 
-class QuestionAnswer(GenericAPIView):
+class QuestionAnswer(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AnswerSerializer
 
@@ -31,3 +31,31 @@ class QuestionAnswer(GenericAPIView):
 
     def get_queryset(self):
         pass
+
+
+class CheckQuestionViewSet(generics.ListAPIView):
+    serializer_class = CheckQuestionSerializer
+
+    def post(self, request):
+
+        return Response({'result': 'OK'})
+
+    def get_queryset(self):
+        pass
+
+# class Survey():
+#     def __init__(self, question):
+#         self.rating = question
+#         self.like = 0
+#         self.dislike = 0
+#
+#     def like(self):
+#         self.rating += 1
+#         self.save()
+#
+#     def dislike(self):
+#         self.rating -= 1
+#         self.save()
+#
+#     def get_likes(self):
+#         return self.like
